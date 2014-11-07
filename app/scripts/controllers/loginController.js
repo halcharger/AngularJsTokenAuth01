@@ -3,7 +3,8 @@ app.controller('loginController', ['$scope', '$location', 'authService', functio
 
   $scope.loginData = {
     userName: '',
-    password: ''
+    password: '',
+    useRefreshTokens: false
   };
 
   $scope.message = '';
@@ -11,9 +12,7 @@ app.controller('loginController', ['$scope', '$location', 'authService', functio
   $scope.login = function () {
 
     authService.login($scope.loginData).then(function () {
-
         $location.path('/orders');
-
       },
       function (err) {
         $scope.message = err.error_description;

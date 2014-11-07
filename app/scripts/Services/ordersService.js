@@ -1,7 +1,7 @@
 'use strict';
-app.factory('ordersService', ['$http', function ($http) {
+app.factory('ordersService', ['$http', 'serverApiSettings', function ($http, serverApiSettings) {
 
-  var serviceBase = 'http://webapi2withtokenauthentication01.azurewebsites.net/';
+  var serviceBase = serverApiSettings.ServerApi;
   var ordersServiceFactory = {};
 
   var _getOrders = function () {
