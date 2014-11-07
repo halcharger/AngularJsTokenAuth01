@@ -8,7 +8,7 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
   var _authentication = {
     isAuth: false,
     userName : '',
-    userRefreshTokens: false
+    useRefreshTokens: false
   };
 
   var _saveRegistration = function (registration) {
@@ -35,16 +35,16 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
     $http = $http || $injector.get('$http');
     $http.post(serviceBase + 'token', data, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
 
-      if (loginData.userRefreshTokens){
-        localStorageService.set('authorizationData', { token: response.access_token, userName: loginData.userName, refreshToken: response.refresh_token, userRefreshTokens: true });
+      if (loginData.useRefreshTokens){
+        localStorageService.set('authorizationData', { token: response.access_token, userName: loginData.userName, refreshToken: response.refresh_token, useRefreshTokens: true });
       }
       else{
-        localStorageService.set('authorizationData', { token: response.access_token, userName: loginData.userName, refreshToken: '', userRefreshTokens: false });
+        localStorageService.set('authorizationData', { token: response.access_token, userName: loginData.userName, refreshToken: '', useRefreshTokens: false });
       }
 
       _authentication.isAuth = true;
       _authentication.userName = loginData.userName;
-      _authentication.userRefreshTokens = loginData.userRefreshTokens;
+      _authentication.useRefreshTokens = loginData.useRefreshTokens;
 
       deferred.resolve(response);
 
@@ -63,7 +63,7 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
 
     _authentication.isAuth = false;
     _authentication.userName = '';
-    _authentication.userRefreshTokens = false;
+    _authentication.useRefreshTokens = false;
 
   };
 
@@ -74,7 +74,7 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
     {
       _authentication.isAuth = true;
       _authentication.userName = authData.userName;
-      _authentication.userRefreshTokens = authData.userRefreshTokens;
+      _authentication.useRefreshTokens = authData.useRefreshTokens;
     }
 
   };
@@ -85,20 +85,19 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
 
     var authData = localStorageService.get('authorizationData');
 
-    if (authData && authData.userRefreshTokens){
+    if (authData && authData.useRefreshTokens){
 
       var data = 'grant_type=refresh_token&refresh_token=' + authData.refreshToken + '&client_id=' + serverApiSettings.client_id;
 
       localStorageService.remove('authorizationData');
 
       $http = $http || $injector.get('$http');
-      $http.post(serverApiSettings.serverBaseUri + 'token', data, {headers: {'content-type': 'application/x-www-form-urlencodeed'} }).success(function(response){
-
+      $http.post(serverApiSettings.serverBaseUri + 'token', data, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function(response){
         localStorageService.set('authorizationData', {token: response.access_token, userName: response.userName, refreshToken: response.refresh_token, useRefreshTokens: true });
 
         deferred.resolve(response);
 
-      }).error(function(){
+      }).error(function(error){
         deferred.reject();
       });
 
@@ -115,7 +114,7 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
   authServiceFactory.logOut = _logOut;
   authServiceFactory.fillAuthData = _fillAuthData;
   authServiceFactory.authentication = _authentication;
-  authServiceFactory.refreshToken = _refreshToken();
+  authServiceFactory.refreshToken = _refreshToken;
 
   return authServiceFactory;
 }]);
