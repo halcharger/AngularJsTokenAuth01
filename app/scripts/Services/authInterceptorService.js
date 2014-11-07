@@ -20,13 +20,13 @@ app.factory('authInterceptorService', ['$q', '$location', '$injector', 'localSto
     var deferred = $q.defer();
     if (rejection.status === 401) {
       var authService = $injector.get('authService');
-      authService.refreshToken().then(function(response){
+      authService.refreshToken().then(function(){
         _retryHttpRequest(rejection.config, deferred);
       }, function(){
         authService.logOut();
         $location.path('/login');
         deferred.reject(rejection);
-      })
+      });
     }
     else{
       deferred.reject(rejection);

@@ -1,7 +1,8 @@
 'use strict';
-app.factory('authService', ['$q', 'localStorageService', 'serverApiSettings', function ($q, localStorageService, serverApiSettings) {
+app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApiSettings', function ($q, $injector, localStorageService, serverApiSettings) {
 
   var serviceBase = serverApiSettings.serverBaseUri;
+  var $http;
   var authServiceFactory = {};
 
   var _authentication = {
@@ -91,7 +92,7 @@ app.factory('authService', ['$q', 'localStorageService', 'serverApiSettings', fu
       localStorageService.remove('authorizationData');
 
       $http = $http || $injector.get('$http');
-      &http.post(serverApiSettings.serverBaseUri + 'token', data, {headers: {'content-type': 'application/x-www-form-urlencodeed'} }).success(function(){
+      $http.post(serverApiSettings.serverBaseUri + 'token', data, {headers: {'content-type': 'application/x-www-form-urlencodeed'} }).success(function(response){
 
         localStorageService.set('authorizationData', {token: response.access_token, userName: response.userName, refreshToken: response.refresh_token, useRefreshTokens: true });
 

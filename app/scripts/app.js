@@ -28,16 +28,17 @@ app.config(function ($routeProvider) {
     templateUrl: '/views/orders.html'
   });
 
-  $routeProvider.when("/tokens", {
-    controller: "tokensManagerController",
-    templateUrl: "/app/views/tokens.html"
+  $routeProvider.when('/tokens', {
+    controller: 'tokensManagerController',
+    templateUrl: '/views/tokens.html'
   });
 
   $routeProvider.otherwise({ redirectTo: '/home' });
 });
 
 app.constant('serverApiSettings', {
-  serverBaseUri: 'http://webapi2withtokenauthentication01.azurewebsites.net/',
+  serverBaseUri: 'http://localhost:51324/',
+  blahserverBaseUri: 'http://webapi2withtokenauthentication01.azurewebsites.net/',
   client_id: 'ngAuthApp'
 });
 

@@ -1,4 +1,4 @@
-﻿﻿'use strict';
+﻿'use strict';
 app.factory('tokensManagerService', ['$http','serverApiSettings', function ($http, serverApiSettings) {
 
   var serviceBase = serverApiSettings.serverBaseUri;
@@ -7,7 +7,7 @@ app.factory('tokensManagerService', ['$http','serverApiSettings', function ($htt
 
   var _getRefreshTokens = function () {
 
-    return $http.get(serviceBase + 'api/refreshtokens').then(function (results) {
+    return $http.get(serviceBase + 'api/RefreshTokens').then(function (results) {
       return results;
     });
   };

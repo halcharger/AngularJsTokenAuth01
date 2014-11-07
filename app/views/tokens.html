@@ -14,6 +14,9 @@
         <th>Expires At (UTC)</th>
       </tr>
       </thead>
+      <div data-ng-hide="message == ''" class="alert alert-danger">
+        {{message}}
+      </div>
       <tbody>
       <tr data-ng-repeat="token in refreshTokens">
         <td>
