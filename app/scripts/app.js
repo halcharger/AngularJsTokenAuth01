@@ -33,6 +33,11 @@ app.config(function ($routeProvider) {
     templateUrl: '/views/tokens.html'
   });
 
+  $routeProvider.when("/associate", {
+    controller: "associateController",
+    templateUrl: "/views/associate.html"
+  });
+
   $routeProvider.otherwise({ redirectTo: '/home' });
 });
 
