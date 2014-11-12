@@ -43,7 +43,7 @@ app.config(function ($routeProvider) {
 
 app.constant('serverApiSettings', {
   serverBaseUri: 'http://localhost:51324/',
-  blahserverBaseUri: 'http://webapi2withtokenauthentication01.azurewebsites.net/',
+  remoteserverBaseUri: 'http://webapi2withtokenauthentication01.azurewebsites.net/',
   client_id: 'ngAuthApp'
 });
 

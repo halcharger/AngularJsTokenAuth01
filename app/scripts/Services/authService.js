@@ -37,10 +37,9 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
       data = data + '&client_id=' + serverApiSettings.client_id;
     }
 
-    var deferred = $q.defer();
-
     $http = $http || $injector.get('$http');
-    $http.post(serviceBase + 'token', data, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
+    return $http.post(serviceBase + 'token', data, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+      .success(function (response) {
 
       if (loginData.useRefreshTokens){
         localStorageService.set('authorizationData', { token: response.access_token, userName: loginData.userName, refreshToken: response.refresh_token, useRefreshTokens: true });
@@ -53,15 +52,10 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
       _authentication.userName = loginData.userName;
       _authentication.useRefreshTokens = loginData.useRefreshTokens;
 
-      deferred.resolve(response);
-
-    }).error(function (err) {
+    })
+      .error(function () {
       _logOut();
-      deferred.reject(err);
     });
-
-    return deferred.promise;
-
   };
 
   var _logOut = function () {
@@ -142,10 +136,10 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
 
   var _registerExternal = function (registerExternalData) {
 
-    var deferred = $q.defer();
+    //var deferred = $q.defer();
 
     $http = $http || $injector.get('$http');
-    $http.post(serviceBase + 'api/account/registerexternal', registerExternalData).success(function (response) {
+    return $http.post(serviceBase + 'api/account/registerexternal', registerExternalData).success(function (response) {
 
       localStorageService.set('authorizationData', { token: response.access_token, userName: response.userName, refreshToken: "", useRefreshTokens: false });
 
@@ -153,14 +147,14 @@ app.factory('authService', ['$q', '$injector', 'localStorageService', 'serverApi
       _authentication.userName = response.userName;
       _authentication.useRefreshTokens = false;
 
-      deferred.resolve(response);
+      //deferred.resolve(response);
 
     }).error(function (err, status) {
       _logOut();
-      deferred.reject(err);
+      //deferred.reject(err);
     });
 
-    return deferred.promise;
+    //return deferred.promise;
 
   };
 

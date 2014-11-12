@@ -14,10 +14,13 @@ app.controller('loginController', ['$scope', '$location', 'serverApiSettings', '
 
   $scope.login = function () {
 
-    authService.login($scope.loginData).then(function () {
+    authService.login($scope.loginData)
+      .success(function () {
         $location.path('/orders');
-      },
-      function (err) {
+      })
+      .error(function (err) {
+        console.log('Error encountered logging in:');
+        console.log(err);
         $scope.message = err.error_description;
       });
   };
@@ -40,6 +43,8 @@ app.controller('loginController', ['$scope', '$location', 'serverApiSettings', '
 
       if (fragment.haslocalaccount == 'False') {
 
+        console.log('external account is not linked to a local account, linking...');
+
         authService.logOut();
 
         authService.externalAuthData = {
@@ -49,10 +54,28 @@ app.controller('loginController', ['$scope', '$location', 'serverApiSettings', '
           externalAccessToken: fragment.external_access_token
         };
 
-        $location.path('/associate');
+        $scope.registerData = {
+          userName: authService.externalAuthData.email,
+          email: authService.externalAuthData.email,
+          provider: authService.externalAuthData.provider,
+          externalAccessToken: authService.externalAuthData.externalAccessToken
+        };
+
+        console.log('about to post registerData: ', $scope.registerData)
+
+        authService.registerExternal($scope.registerData)
+          .success(function(){
+            $location.path('/orders');
+          })
+          .error(function(err){
+            console.log('Error encountered associating external login with local app account:');
+            console.log(err);
+            $scope.message = err.error_description;
+          });
 
       }
       else {
+        console.log('external account is linked to a local account, logging in...');
         //Obtain access token and redirect to orders
         var externalData = { provider: fragment.provider, externalAccessToken: fragment.external_access_token };
         authService.obtainAccessToken(externalData).then(function (response) {
@@ -61,6 +84,8 @@ app.controller('loginController', ['$scope', '$location', 'serverApiSettings', '
 
           },
           function (err) {
+            console.log('Error encountered logging in (authCompletedCB):');
+            console.log(err);
             $scope.message = err.error_description;
           });
       }
